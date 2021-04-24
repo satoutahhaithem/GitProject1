@@ -1,8 +1,10 @@
+import 'package:attendance_app/Screens/Camera_Screen.dart';
 import 'package:flutter/material.dart';
 
+import 'Screens/Home_Screen.dart';
 import 'Screens/Login_Screen.dart';
 import 'Screens/Student_Screen.dart';
-import 'iPhoneXXS1.dart';
+import 'from_adobe_xd/iPhoneXXS1.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,10 +15,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Student_Screen(),
+      home: LoginScreen(),
       routes: {
         LoginScreen.id: (context) => LoginScreen(),
         Student_Screen.id: (context) => Student_Screen(),
+        HomeScreen.id: (context) => HomeScreen(),
+        CameraScreen.id: (context) => CameraScreen(),
       },
     );
   }
