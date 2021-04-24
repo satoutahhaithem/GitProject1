@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:attendance_app/const.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class CameraScreen extends StatefulWidget {
   static final String id = '/CameraScreen';
@@ -8,9 +9,12 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
-  String qrCode = 'Not yet Scanned';
+  GlobalKey qrKey = GlobalKey();
+  QRViewController controller;
+  String qrText = 'Nothing';
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: kBackGroundColor,
       appBar: AppBar(
@@ -20,30 +24,45 @@ class _CameraScreenState extends State<CameraScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            'Result',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 28,
+          Expanded(
+            flex: 10,
+            child: QRView(
+              overlay: QrScannerOverlayShape(
+                borderRadius: 2,
+                borderColor: kBackGroundColor,
+                borderLength: 20,
+                borderWidth: 10,
+                cutOutSize: 300,
+              ),
+              key: qrKey,
+              onQRViewCreated: _onQrViewCreate,
             ),
-            textAlign: TextAlign.center,
           ),
-          Text(
-            qrCode,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18),
+          Expanded(
+            flex: 1,
+            child: Text(
+              'ScanResult\n $qrText',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18),
+            ),
           ),
-          SizedBox(
-            height: 20,
-          ),
-          // ignore: deprecated_member_use
-          FlatButton(
-              onPressed: () async {
-                setState(() {});
-              },
-              child: Text('scan'))
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
+  void _onQrViewCreate(QRViewController controller) {
+    this.controller = controller;
+    controller.scannedDataStream.listen((scanData) {
+      setState(() {
+        qrText = scanData.code;
+      });
+    });
   }
 }
