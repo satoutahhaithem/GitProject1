@@ -1,24 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:attendance_app/const.dart';
 import 'package:attendance_app/Screens/Login_Screen.dart';
-import 'package:attendance_app/Screens/Home_Screen.dart';
-
-class IconsWidget extends StatelessWidget {
-  Widget icon;
-  IconsWidget({this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 102,
-      height: 102,
-      child: icon,
-      decoration: kCircleBoxDecoration,
-    );
-  }
-}
 
 class myCard extends StatefulWidget {
+  String allo;
+
   double height;
   String title, lesson;
   bool isVisible;
@@ -193,7 +179,7 @@ class StudentDrawer extends StatelessWidget {
                 alignment: Alignment.topLeft,
                 child: Icon(
                   Icons.close,
-                  color: Colors.white54,
+                  color: Colors.white,
                   size: 30,
                 ),
               ),
@@ -278,6 +264,22 @@ class StudentDrawer extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class IconsWidget extends StatelessWidget {
+  Widget icon;
+  IconsWidget({this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    return Container(
+      width: height / 7,
+      height: height / 7,
+      child: icon,
+      decoration: kCircleBoxDecoration,
     );
   }
 }

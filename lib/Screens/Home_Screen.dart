@@ -2,7 +2,6 @@ import 'package:attendance_app/Screens/Camera_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:attendance_app/Wigdet.dart';
 import 'package:attendance_app/const.dart';
-import 'package:attendance_app/Screens/Login_Screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String id = '/HomeScreen';
@@ -13,6 +12,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Color(0xffd9d9d9),
       appBar: AppBar(
@@ -24,35 +24,37 @@ class _HomeScreenState extends State<HomeScreen> {
       body: ListView(
         children: [
           SizedBox(
-            height: 80,
+            height: height / 13,
           ),
           myCard(
-            height: 80,
+            height: height / 10,
             title: 'Previous :',
             lesson: 'Analyse 03',
             isVisible: true,
           ),
           SizedBox(
-            height: myHeight,
+            height: height / 40,
           ),
           CurrentWidget(
-            height: 130,
+            height: height / 6,
             lesson: 'POO',
             semestre: 'S2',
             laDate: '11h à 12h30',
           ),
           SizedBox(
-            height: myHeight,
+            height: height / 35,
           ),
           myCard(
-            height: 80,
+            height: height / 10,
             title: 'Next  :',
             lesson: 'English',
             isVisible: false,
             specialForNextWidget: 30,
           ),
           Padding(
-            padding: EdgeInsets.only(top: 110),
+            padding: EdgeInsets.only(
+              top: height / 9,
+            ),
             child: GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, CameraScreen.id);
@@ -61,13 +63,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: Icon(
                   Icons.qr_code_scanner,
                   color: Colors.white,
-                  size: 70,
+                  size: height / 12,
                 ),
               ),
             ),
           ),
           SizedBox(
-            height: myHeight,
+            height: height / 10,
           ),
           /*  Visibility(
             visible: false,

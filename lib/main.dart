@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'Screens/Home_Screen.dart';
 import 'Screens/Login_Screen.dart';
 import 'Screens/Student_Screen.dart';
-import 'from_adobe_xd/iPhoneXXS1.dart';
 
 void main() {
   runApp(MyApp());
