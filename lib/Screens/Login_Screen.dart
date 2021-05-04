@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:attendance_app/const.dart';
 import 'package:attendance_app/Screens/Home_Screen.dart';
 import 'package:attendance_app/const.dart';
+import 'package:flutter/material.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final GoogleSignIn _googleSignIn = GoogleSignIn();
 
 class LoginScreen extends StatefulWidget {
   static final String id = '/LoginScreen';

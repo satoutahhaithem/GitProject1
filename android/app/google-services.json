@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "457412100000",
+    "project_id": "attendance-app-5ae47",
+    "storage_bucket": "attendance-app-5ae47.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:457412100000:android:ed0a3460c15e79468eeec5",
+        "android_client_info": {
+          "package_name": "com.Esi_sba.attendance_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "457412100000-an14le7trh9cuh3jbvjnhp11a6gktq41.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPBoY-1NK9Lhi-NxidNF4pGT36tn90yBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "457412100000-an14le7trh9cuh3jbvjnhp11a6gktq41.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
