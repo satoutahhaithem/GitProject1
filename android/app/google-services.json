@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "457412100000",
-    "project_id": "attendance-app-5ae47",
-    "storage_bucket": "attendance-app-5ae47.appspot.com"
+    "project_number": "153080871071",
+    "project_id": "project2cpi-c82b3",
+    "storage_bucket": "project2cpi-c82b3.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:457412100000:android:ed0a3460c15e79468eeec5",
+        "mobilesdk_app_id": "1:153080871071:android:f76dd08aeadd6431268aaa",
         "android_client_info": {
-          "package_name": "com.Esi_sba.attendance_app"
+          "package_name": "com.example.attendance_app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "457412100000-an14le7trh9cuh3jbvjnhp11a6gktq41.apps.googleusercontent.com",
+          "client_id": "153080871071-vqns0ombl3uamabisaok2a69cicdkkgc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.attendance_app",
+            "certificate_hash": "f64b0d3a0cfdb985a599e25160964faaebedf326"
+          }
+        },
+        {
+          "client_id": "153080871071-lf9lr22ah75qd2a602auagnrcf2ne88q.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDPBoY-1NK9Lhi-NxidNF4pGT36tn90yBY"
+          "current_key": "AIzaSyDxzwO0b9YXVY3COofPIg6Cj0FqNaSyYKg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "457412100000-an14le7trh9cuh3jbvjnhp11a6gktq41.apps.googleusercontent.com",
+              "client_id": "153080871071-lf9lr22ah75qd2a602auagnrcf2ne88q.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

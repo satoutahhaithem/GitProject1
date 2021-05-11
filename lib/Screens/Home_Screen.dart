@@ -1,7 +1,11 @@
 import 'package:attendance_app/Screens/Camera_Screen.dart';
+import 'package:attendance_app/Screens/Login_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:attendance_app/Wigdet.dart';
 import 'package:attendance_app/const.dart';
+import 'package:provider/provider.dart';
+
+import 'Login/google_sign_in_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String id = '/HomeScreen';

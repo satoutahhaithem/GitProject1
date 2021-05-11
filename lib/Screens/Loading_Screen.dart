@@ -13,17 +13,6 @@ bool isLoading = true; // variable to check state
 bool isCorrect = true; //Verify the qr_code
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  loadData() {
-    isLoading = false;
-    //setting state to false after data loaded
-  }
-
-  @override
-  void initState() {
-    loadData(); //call load data on start
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

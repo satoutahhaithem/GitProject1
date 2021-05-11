@@ -1,9 +1,11 @@
 import 'package:attendance_app/Screens/Home_Screen.dart';
+import 'package:attendance_app/Screens/Login/google_sign_in_provider.dart';
+import 'package:attendance_app/Screens/Login/sign_in_logic.dart';
 import 'package:attendance_app/const.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-final FirebaseAuth _auth = FirebaseAuth.instance;
-final GoogleSignIn _googleSignIn = GoogleSignIn();
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   static final String id = '/LoginScreen';
@@ -12,6 +14,26 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  @override
+  @override
+  Widget build(BuildContext context) {
+    return LoginScr();
+    /*StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          final provider = Provider.of<GoogleSignInProvider>(context);
+          if (provider.isSignIn) {
+            return buildLoading();
+          } else if (snapshot.hasData) {
+            return HomeScreen();
+          } else {
+            return LoginScr();
+          }
+        });*/
+  }
+}
+
+class LoginScr extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,8 +70,13 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Container(
                 width: 270,
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, HomeScreen.id);
+                  onPressed: () async {
+                    final provider = Provider.of<GoogleSignInProvider>(context,
+                        listen: false);
+                    await provider.logInGoogle();
+                    if (provider.isSignIn) {
+                      Navigator.pushNamed(context, HomeScreen.id);
+                    }
                   },
                   icon: Image.asset(
                     'images/googleLogo.png',
@@ -64,9 +91,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   style: ButtonStyle(
                     /* shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                    )),*/
+                      RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                  )),*/
                     padding: MaterialStateProperty.all(EdgeInsets.all(10)),
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
@@ -80,3 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+Widget buildLoading() => Center(
+      child: CircularProgressIndicator(),
+    );

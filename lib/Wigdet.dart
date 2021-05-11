@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:attendance_app/const.dart';
 import 'package:attendance_app/Screens/Login_Screen.dart';
+import 'package:provider/provider.dart';
+
+import 'Screens/Login/google_sign_in_provider.dart';
 
 class myCard extends StatefulWidget {
   String allo;
@@ -164,6 +167,7 @@ class ListeTitle extends StatelessWidget {
 class StudentDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: kBlueColor,
@@ -193,10 +197,15 @@ class StudentDrawer extends StatelessWidget {
                     height: 20,
                   ),
                   Center(
-                    child: Icon(
-                      Icons.account_circle,
-                      size: 180,
-                      color: Colors.white,
+                    child: SizedBox(
+                      child: CircleAvatar(
+                        radius: MediaQuery.of(context).size.height * 0.1,
+                        backgroundImage: NetworkImage(
+                          provider.googleSignInAccount.photoUrl != null
+                              ? provider.googleSignInAccount.photoUrl
+                              : Icons.person,
+                        ),
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -204,8 +213,8 @@ class StudentDrawer extends StatelessWidget {
                   ),
                   Center(
                     child: Text(
-                      '    Satoutah Haithem\n '
-                      's.haithem@esi-sba.dz ',
+                      '    ${provider.googleSignInAccount.displayName}\n '
+                      '${provider.googleSignInAccount.email} ',
                       style: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 20,
@@ -248,11 +257,23 @@ class StudentDrawer extends StatelessWidget {
                         child: OutlineButton(
                           borderSide: BorderSide(color: Colors.white),
                           onPressed: () {
+                            final provider = Provider.of<GoogleSignInProvider>(
+                                context,
+                                listen: false);
+                            provider.logout();
                             Navigator.pushNamed(context, LoginScreen.id);
                           },
-                          child: Text(
-                            "Log Out",
-                            style: TextStyle(color: Colors.white),
+                          child: TextButton(
+                            onPressed: () async {
+                              await provider.logout();
+                              if (!provider.isSignIn) {
+                                Navigator.pushNamed(context, LoginScreen.id);
+                              }
+                            },
+                            child: Text(
+                              "Log Out",
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
                       ),
