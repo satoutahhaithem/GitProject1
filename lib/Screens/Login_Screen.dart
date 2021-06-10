@@ -1,11 +1,21 @@
+import 'dart:io';
+import 'dart:convert';
+
 import 'package:attendance_app/Screens/Home_Screen.dart';
+import 'package:attendance_app/Screens/Loading_Screen.dart';
 import 'package:attendance_app/Screens/Login/google_sign_in_provider.dart';
 import 'package:attendance_app/Screens/Login/sign_in_logic.dart';
 import 'package:attendance_app/const.dart';
+import 'package:attendance_app/service/send_data_to_the_internet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:device_info/device_info.dart';
+import 'dart:io' show Platform;
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   static final String id = '/LoginScreen';
@@ -14,97 +24,230 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  @override
+  Future<String> getLesson(String sectionId, String groupId) async {
+    final String uri =
+        "https://attendance-2.herokuapp.com/api/lectures/now/$sectionId/$groupId";
+    final res = await http.get(Uri.parse(uri));
+    final String responseString = res.body;
+    return responseString;
+  }
+
+  Future<String> getStudentDetails(String email) async {
+    final String url = "https://attendance-2.herokuapp.com/api/student/search";
+    final res = await http.post(
+      Uri.parse(url),
+      body: {
+        "email": email,
+      },
+    );
+    final String responseString = res.body;
+
+    print('_______________'
+        'case1'
+        '_________________');
+    // print(responseString);
+    return responseString;
+  }
+
+  Future<String> futureStudentInfo;
+  String studentInfo = "Nothing";
+  String lessonInfo = "Nothing";
+  String lastEmail = "";
+  String photoUrl = "";
+  bool loading = true;
   @override
   Widget build(BuildContext context) {
-    return LoginScr();
-    /*StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
+    final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
+    justLogin() async {
+      if (FirebaseAuth.instance.currentUser != null) {
+        await provider.logInGoogle();
+        studentInfo =
+            await getStudentDetails(provider.googleSignInAccount.email);
+        Map<String, dynamic> studentInf = json.decode(studentInfo);
+        lessonInfo = await getLesson(studentInf["section_Id"].toString(),
+            studentInf["group_Id"].toString());
+        print('inside the just login $lessonInfo');
+      }
+      return provider.googleSignInAccount;
+    }
+
+    return FutureBuilder(
+        future: justLogin(),
         builder: (context, snapshot) {
-          final provider = Provider.of<GoogleSignInProvider>(context);
-          if (provider.isSignIn) {
-            return buildLoading();
-          } else if (snapshot.hasData) {
-            return HomeScreen();
+          print(snapshot.connectionState);
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return LoadingScreen();
+          } else if (snapshot.data == null) {
+            return LoginScr();
+          } else if (provider.googleSignInAccount.photoUrl != null) {
+            return HomeScreen(
+              studentInfo: studentInfo,
+              photoUrl: provider.googleSignInAccount.photoUrl,
+              lessonInfo: lessonInfo,
+            );
           } else {
             return LoginScr();
           }
-        });*/
+        });
   }
 }
 
-class LoginScr extends StatelessWidget {
+// ignore: must_be_immutable
+class LoginScr extends StatefulWidget {
+  @override
+  _LoginScrState createState() => _LoginScrState();
+}
+
+class _LoginScrState extends State<LoginScr> {
+  Future<String> getStudentDetails(String email) async {
+    final String url = "https://attendance-2.herokuapp.com/api/student/search";
+    final res = await http.post(
+      Uri.parse(url),
+      body: {
+        "email": email,
+      },
+    );
+    final String responseString = res.body;
+
+    print('_______________'
+        'case1'
+        '_________________');
+    // print(responseString);
+    return responseString;
+  }
+
+  String studentInfo = "";
+
+  String myEmail = "";
+
+  String lastCharEmail = "";
+
+  bool loading = false;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBlueColor,
-      resizeToAvoidBottomInset: true,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              width: 139.0,
-              height: 153.0,
-              child: Center(
-                child: Text(
-                  'App_Logo',
-                  style: TextStyle(
-                    fontFamily: 'Segoe UI',
-                    fontSize: 20,
-                    color: Colors.black,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.all(Radius.elliptical(9999.0, 9999.0)),
-                color: Colors.white,
-                border: Border.all(width: 1.0, color: const Color(0xff707070)),
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                width: 270,
-                child: ElevatedButton.icon(
-                  onPressed: () async {
-                    final provider = Provider.of<GoogleSignInProvider>(context,
-                        listen: false);
-                    await provider.logInGoogle();
-                    if (provider.isSignIn) {
-                      Navigator.pushNamed(context, HomeScreen.id);
-                    }
-                  },
-                  icon: Image.asset(
-                    'images/googleLogo.png',
-                    width: 40,
-                  ),
-                  label: Text(
-                    "Sign in with Google",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
+    return loading
+        ? LoadingScreen()
+        : Scaffold(
+            backgroundColor: kBlueColor,
+            resizeToAvoidBottomInset: true,
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    // width: 137.0,
+                    // height: 168.0,
+                    child: CircleAvatar(
+                      backgroundImage:
+                          AssetImage('assets/images/attendence.png'),
+                      radius: 100,
+                      // child: Text(
+                      //   'App_Logo',
+                      //   style: TextStyle(
+                      //     fontFamily: 'Segoe UI',
+                      //     fontSize: 20,
+                      //     color: Colors.black,
+                      //   ),
+                      //   textAlign: TextAlign.left,
+                      // ),
                     ),
+                    // decoration: BoxDecoration(
+                    //   borderRadius:
+                    //       BorderRadius.all(Radius.elliptical(9999.0, 9999.0)),
+                    //   color: Colors.white,
+                    //   border: Border.all(
+                    //       width: 1.0, color: const Color(0xff707070)),
+                    // ),
                   ),
-                  style: ButtonStyle(
-                    /* shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      width: 270,
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          final provider = Provider.of<GoogleSignInProvider>(
+                              context,
+                              listen: false);
+                          setState(() {
+                            loading = true;
+                          });
+                          await provider.logInGoogle();
+                          myEmail = provider.googleSignInAccount.email;
+                          if (myEmail.endsWith("@esi-sba.dz")) {
+                            studentInfo = await getStudentDetails(
+                                provider.googleSignInAccount.email);
+                            if (provider.isSignIn) {
+                              if (studentInfo == "student not found") {
+                                Fluttertoast.showToast(
+                                  toastLength: Toast.LENGTH_LONG,
+                                  msg:
+                                      "This email not found on the Student List ",
+                                );
+                                provider.logout();
+                              } else {
+                                print("_________________________________"
+                                    "$studentInfo"
+                                    "__________________________________");
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => HomeScreen(
+                                      studentInfo: studentInfo,
+                                      photoUrl:
+                                          provider.googleSignInAccount.photoUrl,
+                                    ),
+                                  ),
+                                );
+                                setState(() {
+                                  loading = false;
+                                });
+                              }
+                            }
+                          } else {
+                            setState(() {
+                              loading = false;
+                            });
+                            Fluttertoast.showToast(
+                              toastLength: Toast.LENGTH_LONG,
+                              msg: "You need esi sba email",
+                            );
+                            print("___________"
+                                "you can't email"
+                                "_________________");
+                            provider.logout();
+                          }
+                        },
+                        icon: Image.asset(
+                          'images/googleLogo.png',
+                          width: 40,
+                        ),
+                        label: Text(
+                          "Sign in with Google",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                        style: ButtonStyle(
+                          /* shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0),
                   )),*/
-                    padding: MaterialStateProperty.all(EdgeInsets.all(10)),
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
+                          padding:
+                              MaterialStateProperty.all(EdgeInsets.all(10)),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.white),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 }
 

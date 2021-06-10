@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:attendance_app/const.dart';
 import 'package:attendance_app/Screens/Login_Screen.dart';
 import 'package:provider/provider.dart';
-
+import 'package:http/http.dart' as http;
 import 'Screens/Login/google_sign_in_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class myCard extends StatefulWidget {
   String allo;
@@ -164,10 +167,23 @@ class ListeTitle extends StatelessWidget {
   }
 }
 
-class StudentDrawer extends StatelessWidget {
+class StudentDrawer extends StatefulWidget {
+  final String studentInfo;
+  final String photoUrl;
+
+  const StudentDrawer({Key key, this.studentInfo, this.photoUrl})
+      : super(key: key);
+  @override
+  _StudentDrawerState createState() => _StudentDrawerState();
+}
+
+class _StudentDrawerState extends State<StudentDrawer> {
   @override
   Widget build(BuildContext context) {
+    print(widget.studentInfo);
     final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
+    Map<String, dynamic> studentInf = jsonDecode(widget.studentInfo);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: kBlueColor,
@@ -201,9 +217,9 @@ class StudentDrawer extends StatelessWidget {
                       child: CircleAvatar(
                         radius: MediaQuery.of(context).size.height * 0.1,
                         backgroundImage: NetworkImage(
-                          provider.googleSignInAccount.photoUrl != null
-                              ? provider.googleSignInAccount.photoUrl
-                              : Icons.person,
+                          widget.photoUrl != null
+                              ? widget.photoUrl
+                              : 'https://image.flaticon.com/icons/png/128/1077/1077114.png',
                         ),
                       ),
                     ),
@@ -213,7 +229,7 @@ class StudentDrawer extends StatelessWidget {
                   ),
                   Center(
                     child: Text(
-                      '    ${provider.googleSignInAccount.displayName}\n '
+                      ' ${provider.googleSignInAccount.displayName}\n '
                       '${provider.googleSignInAccount.email} ',
                       style: TextStyle(
                         fontFamily: 'Segoe UI',
@@ -228,21 +244,21 @@ class StudentDrawer extends StatelessWidget {
                   ),
                   ListeTitle(
                     title: 'level :',
-                    subTitle: '2CPI\n________________',
+                    subTitle: '${studentInf["level_Id"]}\n________________',
                   ),
                   SizedBox(
                     height: 20,
                   ),
                   ListeTitle(
                     title: 'Section :',
-                    subTitle: 'A\n________________',
+                    subTitle: '${studentInf["section_Id"]}\n________________',
                   ),
                   SizedBox(
                     height: 20,
                   ),
                   ListeTitle(
                     title: 'Groupe :',
-                    subTitle: '03\n________________',
+                    subTitle: '${studentInf["group_Id"]}\n________________',
                   ),
                   SizedBox(
                     height: 60,
@@ -261,24 +277,17 @@ class StudentDrawer extends StatelessWidget {
                                 context,
                                 listen: false);
                             provider.logout();
-                            Navigator.pushNamed(context, LoginScreen.id);
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (_) => LoginScr()));
                           },
-                          child: TextButton(
-                            onPressed: () async {
-                              await provider.logout();
-                              if (!provider.isSignIn) {
-                                Navigator.pushNamed(context, LoginScreen.id);
-                              }
-                            },
-                            child: Text(
-                              "Log Out",
-                              style: TextStyle(color: Colors.white),
-                            ),
+                          child: Text(
+                            "Log Out",
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

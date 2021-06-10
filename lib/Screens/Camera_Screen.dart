@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:attendance_app/const.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:attendance_app/service/send_data_to_the_internet.dart';
 
 class CameraScreen extends StatefulWidget {
   static final String id = '/CameraScreen';
@@ -12,6 +13,7 @@ class _CameraScreenState extends State<CameraScreen> {
   GlobalKey qrKey = GlobalKey();
   QRViewController controller;
   String qrText = 'Nothing';
+  String scanningTime="";
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -62,7 +64,9 @@ class _CameraScreenState extends State<CameraScreen> {
     controller.scannedDataStream.listen((scanData) {
       setState(() {
         qrText = scanData.code;
+        scanningTime = DateTime.now().toString();
       });
     });
+    data.qrCodeString = qrText;
   }
 }

@@ -5,14 +5,26 @@ import 'package:provider/provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:attendance_app/service/send_data_to_the_internet.dart';
 
 class GoogleSignInProvider extends ChangeNotifier {
   bool _isSignIn;
+  String _studentInfo;
+
+  String get studentInfo => _studentInfo;
+
+  set setStudentInfo(String value) {
+    _studentInfo = value;
+  }
+
   GoogleSignInProvider() {
     _isSignIn = false;
   }
 
-  bool get isSignIn => _isSignIn;
+  bool get isSignIn {
+    return _isSignIn;
+    notifyListeners();
+  }
 
   set isSignIn(bool value) {
     _isSignIn = value;
@@ -28,7 +40,10 @@ class GoogleSignInProvider extends ChangeNotifier {
   logInGoogle() async {
     try {
       final GoogleSignInAccount googleUser = await googleSignIn.signIn();
-
+      data.studentId = googleUser.id;
+      print('___________________________________'
+          '${data.studentId}__________________'
+          '_________________________________');
       if (googleUser == null) {
         isSignIn = false;
       } else {
@@ -62,60 +77,3 @@ class GoogleSignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
-
-/*
-FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-final authService=AuthService();
-final googleSignIn = GoogleSignIn(scopes: ['email']);
-bool _isSigninIn;
-
-GoogleSignInProvider() {
-  _isSigninIn = false;
-}
-
-bool get isSigninIn => _isSigninIn;
-
-set isSigninIn(bool value) {
-  _isSigninIn = value;
-  notifyListeners();
-}
-
-// ignore: missing_return
-login() async {
-  try {
-    isSigninIn = true;
-    final user = await googleSignIn.signIn();
-    if (user == null) {
-      print('____________________________________'
-          'aaa'
-          '_______________________________________');
-      isSigninIn = false;
-    } else {
-      print('______________________________________'
-          'bbb'
-          '________________________________________');
-      final googleAuth = await user.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      final result =
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      print('______________________________________'
-          '${result.user.email}'
-          '________________________________________');
-      isSigninIn = false;
-    }
-  } catch (e) {
-    print('_____________________erreur'
-        '$e'
-        '_______________________erreur');
-  }
-}
-
-// ignore: non_constant_identifier_names
-void Logout() async {
-  await googleSignIn.disconnect();
-  FirebaseAuth.instance.signOut();
-}*/

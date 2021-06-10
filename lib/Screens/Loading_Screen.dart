@@ -3,7 +3,27 @@ import 'package:attendance_app/Screens/Declined_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:attendance_app/const.dart';
 import 'package:loading_animations/loading_animations.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:attendance_app/const.dart';
 
+class LoadingScreen extends StatelessWidget {
+  const LoadingScreen({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: kBlueColor,
+      child: Center(
+        child: SpinKitChasingDots(
+          color: Colors.white,
+          size: 100,
+        ),
+      ),
+    );
+  }
+}
+
+/*
 class LoadingScreen extends StatefulWidget {
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
@@ -35,3 +55,4 @@ class _LoadingScreenState extends State<LoadingScreen> {
                 : Navigator.pushNamed(context, DeclinedScreen.id));
   }
 }
+*/

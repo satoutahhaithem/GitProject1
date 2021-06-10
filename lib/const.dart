@@ -4,6 +4,8 @@ import 'package:attendance_app/Screens/Home_Screen.dart';
 double myHeight = 20;
 Color kBackGroundColor = Color(0xffd9d9d9);
 Color kBlueColor = Color(0xff033e8c);
+Color kAccentBlueColor = Color(0xff1855a7);
+
 Color kProbablyWhiteColor = Colors.white;
 List<BoxShadow> kCircleBoxShadow = [
   new BoxShadow(
@@ -32,7 +34,7 @@ List<BoxShadow> kCardBoxShadow = [
 BoxDecoration kCardBoxDecoration = BoxDecoration(
   shape: BoxShape.rectangle,
   borderRadius: BorderRadius.all(Radius.circular(10)),
-  color: kBlueColor,
+  color: kAccentBlueColor,
   boxShadow: kCardBoxShadow,
 );
 TextStyle kCurrentCardLessonTextStyle = TextStyle(
