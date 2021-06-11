@@ -14,56 +14,96 @@ class myCard extends StatefulWidget {
   double height;
   String title, lesson;
   bool isVisible;
+  String lessonType;
   double specialForNextWidget;
+  String starting;
+  String ending;
+  String professor;
   myCard(
       {this.height,
       this.title,
       this.lesson,
       this.isVisible,
-      this.specialForNextWidget});
+      this.specialForNextWidget,
+      this.lessonType,
+      this.starting,
+      this.ending,
+      this.professor});
   @override
   _myCardState createState() => _myCardState();
 }
 
 class _myCardState extends State<myCard> {
-  bool _isChecked = true;
-
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return Padding(
       padding: EdgeInsets.only(left: myHeight, right: myHeight),
       child: Container(
         width: double.infinity,
         height: widget.height,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Padding(
-              padding: EdgeInsets.only(left: 15),
-              child: Text(
-                widget.title,
-                style: kTitleTextStyle,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 15),
+                  child: Text(
+                    widget.title,
+                    style: kTitleTextStyle,
+                  ),
+                ),
+                Text(
+                  widget.lesson,
+                  style: kLessonTextStyle,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: Text(
+                    '${widget.lessonType}',
+                    style: kLessonTextStyle,
+                  ),
+                ),
+                // Container(
+                //   width: widget.specialForNextWidget,
+                //   child: Visibility(
+                //     visible: widget.isVisible,
+                //     child: Checkbox(
+                //         checkColor: Colors.white,
+                //         activeColor: Colors.black45,
+                //         value: widget.isChecked,
+                //         onChanged: (bool value) {
+                //           setState(() {
+                //             _isChecked = value;
+                //           });
+                //         }),
+                //   ),
+                // )
+              ],
             ),
-            Text(
-              widget.lesson,
-              style: kLessonTextStyle,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  '${widget.professor}',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '${widget.starting} To ${widget.ending}',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            Container(
-              width: widget.specialForNextWidget,
-              child: Visibility(
-                visible: widget.isVisible,
-                child: Checkbox(
-                    checkColor: Colors.white,
-                    activeColor: Colors.black45,
-                    value: _isChecked,
-                    onChanged: (bool value) {
-                      setState(() {
-                        _isChecked = value;
-                      });
-                    }),
-              ),
-            )
           ],
         ),
         decoration: kCardBoxDecoration,
@@ -75,8 +115,17 @@ class _myCardState extends State<myCard> {
 class CurrentWidget extends StatelessWidget {
   double height;
   String lesson;
-  String semestre, laDate;
-  CurrentWidget({this.height, this.lesson, this.semestre, this.laDate});
+  String startingCurrent;
+  String endingCurrent;
+  String professor;
+  String lessonType;
+  CurrentWidget(
+      {this.height,
+      this.lesson,
+      this.startingCurrent,
+      this.endingCurrent,
+      this.professor,
+      this.lessonType});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -94,7 +143,7 @@ class CurrentWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 15, top: 20),
+                  padding: EdgeInsets.only(left: 15),
                   child: Text(
                     'Current :',
                     style: kTitleTextStyle,
@@ -102,28 +151,34 @@ class CurrentWidget extends StatelessWidget {
                 ),
                 Text(
                   lesson,
-                  style: kCurrentCardLessonTextStyle,
+                  style: kLessonTextStyle,
                 ),
-                Container(
-                  width: 60,
-                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 15),
+                  child: Text(
+                    lessonType,
+                    style: kLessonTextStyle,
+                  ),
+                )
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(),
-                Text(
-                  semestre,
-                  style: kCurrentCardSemestreDateTextStyle,
-                ),
                 Padding(
-                  padding: EdgeInsets.only(right: 60),
+                  padding: const EdgeInsets.only(left: 25),
                   child: Text(
-                    laDate,
-                    style: kCurrentCardSemestreDateTextStyle,
+                    '$professor',
+                    style: kProfAndTimeCurrentTextStyle,
                   ),
                 ),
+                Padding(
+                  padding: EdgeInsets.only(right: 25),
+                  child: Text(
+                    '${startingCurrent} To ${endingCurrent}',
+                    style: kProfAndTimeCurrentTextStyle,
+                  ),
+                )
               ],
             ),
           ],

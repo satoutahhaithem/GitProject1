@@ -18,12 +18,17 @@ BoxDecoration kCircleBoxDecoration = BoxDecoration(
 TextStyle kTitleTextStyle = TextStyle(
   color: Colors.white,
   fontWeight: FontWeight.bold,
-  fontSize: 16,
+  fontSize: 17,
 );
 TextStyle kLessonTextStyle = TextStyle(
   color: kProbablyWhiteColor,
   fontWeight: FontWeight.bold,
   fontSize: 23,
+);
+TextStyle kProfAndTimeCurrentTextStyle = TextStyle(
+  color: Colors.white,
+  fontSize: 15.5,
+  fontWeight: FontWeight.bold,
 );
 List<BoxShadow> kCardBoxShadow = [
   new BoxShadow(

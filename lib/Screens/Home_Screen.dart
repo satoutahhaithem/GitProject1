@@ -55,11 +55,28 @@ class _HomeScreenState extends State<HomeScreen> {
     double height = MediaQuery.of(context).size.height;
     print('inside Home screen lesson info ${widget.lessonInfo}');
     Map<String, dynamic> lessonInf = json.decode(widget.lessonInfo);
+    String timeStartingLast =
+        lessonInf["last"] == null ? "****" : lessonInf["last"]["starting"];
+    String timeEndingLast =
+        lessonInf["last"] == null ? "****" : lessonInf["last"]["ending"];
+    String timeStartingNext =
+        lessonInf["last"] == null ? "****" : lessonInf["last"]["starting"];
+    String timeEndingNext =
+        lessonInf["last"] == null ? "****" : lessonInf["last"]["ending"];
+    String dayOfTheWeek =
+        lessonInf["next"] == null ? "" : lessonInf["next"]["day_Of_Week"];
     return Scaffold(
       backgroundColor: Color(0xffd9d9d9),
       appBar: AppBar(
-        backgroundColor: kBlueColor,
-      ),
+          backgroundColor: kBlueColor,
+          title: Padding(
+            padding:
+                EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.25),
+            child: Text(
+              dayOfTheWeek.toUpperCase(),
+              style: kTitleTextStyle,
+            ),
+          )),
       drawer: Drawer(
         child: StudentDrawer(
           studentInfo: widget.studentInfo,
@@ -72,36 +89,60 @@ class _HomeScreenState extends State<HomeScreen> {
             height: height / 13,
           ),
           myCard(
-            height: height / 10,
+            height: height / 7,
             title: 'Previous :',
             // lesson: 'Analyse 03',
             lesson:
                 '${lessonInf["last"] == null ? '*******' : lessonInf["last"]["module"]}',
             isVisible: true,
+            lessonType:
+                '${lessonInf["last"] == null ? '' : lessonInf["last"]["lecture_Type"]}',
+            starting: '${timeStartingLast.substring(0, 5)}',
+            ending: '${timeEndingLast.substring(0, 5)}',
+            professor: lessonInf["last"] == null
+                ? "*****"
+                : lessonInf["last"]["professor"],
           ),
           SizedBox(
             height: height / 40,
           ),
           CurrentWidget(
             height: height / 6,
-            // lesson: 'POO',
             lesson:
                 '${lessonInf["now"] == null ? '*******' : lessonInf["now"]["module"]}',
-            semestre: 'S2',
-            laDate:
-                '${lessonInf["now"] == null ? '*******' : lessonInf["now"]["starting"]}',
+            startingCurrent:
+                "${lessonInf["now"] == null ? '*******' : lessonInf["now"]["starting"]}",
+            endingCurrent:
+                "${lessonInf["now"] == null ? '*******' : lessonInf["now"]["ending"]}",
+            professor:
+                "${lessonInf["now"] == null ? '*******' : lessonInf["now"]["professor"]}",
+            lessonType:
+                "${lessonInf["now"] == null ? '*******' : lessonInf["now"]["lecture_Type"]}",
+
+            // lesson: 'Algorithme',
+            // startingCurrent: '08:00',
+            // endingCurrent: '09:30',
+            // professor: 'Si Mohammed Noureddine',
+            // lessonType: 'cours',
           ),
           SizedBox(
             height: height / 35,
           ),
           myCard(
-            height: height / 10,
+            height: height / 7,
             title: 'Next  :',
             // lesson: 'English',
             lesson:
                 '${lessonInf["next"] == null ? '*******' : lessonInf["next"]["module"]}',
             isVisible: false,
             specialForNextWidget: 30,
+            lessonType:
+                '${lessonInf["next"] == null ? '' : lessonInf["next"]["lecture_Type"]}',
+            starting: '${timeStartingNext.substring(0, 5)}',
+            ending: '${timeEndingNext.substring(0, 5)}',
+            professor: lessonInf["next"] == null
+                ? "*****"
+                : lessonInf["next"]["professor"],
           ),
           Padding(
             padding: EdgeInsets.only(

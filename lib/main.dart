@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'Screens/Home_Screen.dart';
 import 'Screens/Loading_Screen.dart';
 import 'Screens/Login_Screen.dart';
+import 'Screens/Splash_Screen.dart';
 import 'Screens/Student_Screen.dart';
 import 'package:attendance_app/Screens/Accepted_Screen.dart';
 import 'package:attendance_app/Screens/Declined_Screen.dart';
@@ -41,7 +42,7 @@ class _MyAppState extends State<MyApp> {
     AuthServices authServices = AuthServices();
     final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
     return MaterialApp(
-      home: LoginScreen(),
+      home: Splash(),
       routes: {
         LoginScreen.id: (context) => LoginScreen(),
         Student_Screen.id: (context) => Student_Screen(),

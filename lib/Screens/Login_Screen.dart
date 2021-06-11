@@ -100,6 +100,36 @@ class LoginScr extends StatefulWidget {
 }
 
 class _LoginScrState extends State<LoginScr> {
+  Future<String> getLesson(String sectionId, String groupId) async {
+    final String uri =
+        "https://attendance-2.herokuapp.com/api/lectures/now/$sectionId/$groupId";
+    final res = await http.get(Uri.parse(uri));
+    final String responseString = res.body;
+    return responseString;
+  }
+
+  Future<String> getDeviceId() async {
+    final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+    try {
+      if (Platform.isAndroid) {
+        var build = await deviceInfoPlugin.androidInfo;
+        setState(() {
+          deviceId = build.androidId;
+        });
+      } else if (Platform.isIOS) {
+        var data = await deviceInfoPlugin.iosInfo;
+        setState(() {
+          deviceId = data.identifierForVendor;
+        });
+      }
+    } catch (e) {
+      print("___________________________"
+          "erreur____________________$e"
+          "--------------------------");
+    }
+    return deviceId;
+  }
+
   Future<String> getStudentDetails(String email) async {
     final String url = "https://attendance-2.herokuapp.com/api/student/search";
     final res = await http.post(
@@ -117,6 +147,8 @@ class _LoginScrState extends State<LoginScr> {
     return responseString;
   }
 
+  String deviceId = "Nothing";
+
   String studentInfo = "";
 
   String myEmail = "";
@@ -125,6 +157,7 @@ class _LoginScrState extends State<LoginScr> {
 
   bool loading = false;
 
+  String lessonInfo = "Nothing";
   @override
   Widget build(BuildContext context) {
     return loading
@@ -140,19 +173,22 @@ class _LoginScrState extends State<LoginScr> {
                   Container(
                     // width: 137.0,
                     // height: 168.0,
-                    child: CircleAvatar(
-                      backgroundImage:
-                          AssetImage('assets/images/attendence.png'),
-                      radius: 100,
-                      // child: Text(
-                      //   'App_Logo',
-                      //   style: TextStyle(
-                      //     fontFamily: 'Segoe UI',
-                      //     fontSize: 20,
-                      //     color: Colors.black,
-                      //   ),
-                      //   textAlign: TextAlign.left,
-                      // ),
+                    child: Hero(
+                      tag: 'logoTag',
+                      child: CircleAvatar(
+                        backgroundImage:
+                            AssetImage('assets/images/attendance_logo4.png'),
+                        radius: MediaQuery.of(context).size.width * 0.33,
+                        // child: Text(
+                        //   'App_Logo',
+                        //   style: TextStyle(
+                        //     fontFamily: 'Segoe UI',
+                        //     fontSize: 20,
+                        //     color: Colors.black,
+                        //   ),
+                        //   textAlign: TextAlign.left,
+                        // ),
+                      ),
                     ),
                     // decoration: BoxDecoration(
                     //   borderRadius:
@@ -168,6 +204,11 @@ class _LoginScrState extends State<LoginScr> {
                       width: 270,
                       child: ElevatedButton.icon(
                         onPressed: () async {
+                          //for device
+                          // String theDeviceId = await getDeviceId();
+                          // print('deviceId______________________________'
+                          //     '$deviceId'
+                          //     '__________________________________________');
                           final provider = Provider.of<GoogleSignInProvider>(
                               context,
                               listen: false);
@@ -191,6 +232,11 @@ class _LoginScrState extends State<LoginScr> {
                                 print("_________________________________"
                                     "$studentInfo"
                                     "__________________________________");
+                                Map<String, dynamic> studentInf =
+                                    json.decode(studentInfo);
+                                lessonInfo = await getLesson(
+                                    studentInf["section_Id"].toString(),
+                                    studentInf["group_Id"].toString());
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
@@ -198,6 +244,7 @@ class _LoginScrState extends State<LoginScr> {
                                       studentInfo: studentInfo,
                                       photoUrl:
                                           provider.googleSignInAccount.photoUrl,
+                                      lessonInfo: lessonInfo,
                                     ),
                                   ),
                                 );
