@@ -155,7 +155,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     'device id___________________________________________________'
                     '$deviceId--------------------------------------------'
                     '____________________________________________________');
-                Navigator.pushNamed(context, CameraScreen.id);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CameraScreen(
+                      studentInfo: widget.studentInfo,
+                    ),
+                  ),
+                );
               },
               child: IconsWidget(
                 icon: Icon(

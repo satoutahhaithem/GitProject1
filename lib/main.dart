@@ -25,6 +25,7 @@ void main() async {
   print(data.qrCodeString);
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   runApp(ChangeNotifierProvider(
       create: (_) => GoogleSignInProvider(),
       builder: (context, child) => MyApp()));

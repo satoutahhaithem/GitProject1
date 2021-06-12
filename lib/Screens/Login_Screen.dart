@@ -24,6 +24,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String deviceType = "Nothing";
+  String deviceId = "Nothing";
   Future<String> getLesson(String sectionId, String groupId) async {
     final String uri =
         "https://attendance-2.herokuapp.com/api/lectures/now/$sectionId/$groupId";
@@ -32,12 +34,37 @@ class _LoginScreenState extends State<LoginScreen> {
     return responseString;
   }
 
-  Future<String> getStudentDetails(String email) async {
+  Future<String> getDeviceId() async {
+    final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+    try {
+      if (Platform.isAndroid) {
+        var build = await deviceInfoPlugin.androidInfo;
+        setState(() {
+          deviceId = build.androidId;
+        });
+      } else if (Platform.isIOS) {
+        var data = await deviceInfoPlugin.iosInfo;
+        setState(() {
+          deviceId = data.identifierForVendor;
+        });
+      }
+    } catch (e) {
+      print("___________________________"
+          "erreur____________________$e"
+          "--------------------------");
+    }
+    return deviceId;
+  }
+
+  Future<String> getStudentDetails(
+      String email, String deviceType, String deviceId) async {
     final String url = "https://attendance-2.herokuapp.com/api/student/search";
     final res = await http.post(
       Uri.parse(url),
       body: {
         "email": email,
+        "device_type": deviceType,
+        "device_id": deviceId,
       },
     );
     final String responseString = res.body;
@@ -58,11 +85,21 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
+
     justLogin() async {
+      studentInfo = await getStudentDetails(
+          provider.googleSignInAccount.email, deviceType, deviceId);
       if (FirebaseAuth.instance.currentUser != null) {
-        await provider.logInGoogle();
-        studentInfo =
-            await getStudentDetails(provider.googleSignInAccount.email);
+        await getDeviceId();
+        deviceType = Platform.isAndroid ? "android" : "ios";
+        print("in the just Login $deviceId");
+        print("in the just Login $deviceType");
+        print("in the just Login ${provider.googleSignInAccount.email}");
+        if (!provider.isSignIn) {
+          print('aaaaaaaaa');
+          provider.logInGoogle();
+        }
+        print('11111111111111111');
         Map<String, dynamic> studentInf = json.decode(studentInfo);
         lessonInfo = await getLesson(studentInf["section_Id"].toString(),
             studentInf["group_Id"].toString());
@@ -75,9 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
         future: justLogin(),
         builder: (context, snapshot) {
           print(snapshot.connectionState);
-
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return LoadingScreen();
+            return LoginScr();
           } else if (snapshot.data == null) {
             return LoginScr();
           } else if (provider.googleSignInAccount.photoUrl != null) {
@@ -130,12 +166,15 @@ class _LoginScrState extends State<LoginScr> {
     return deviceId;
   }
 
-  Future<String> getStudentDetails(String email) async {
+  Future<String> getStudentDetails(
+      String email, String deviceType, String deviceId) async {
     final String url = "https://attendance-2.herokuapp.com/api/student/search";
     final res = await http.post(
       Uri.parse(url),
       body: {
         "email": email,
+        "device_type": deviceType,
+        "device_id": deviceId,
       },
     );
     final String responseString = res.body;
@@ -204,11 +243,18 @@ class _LoginScrState extends State<LoginScr> {
                       width: 270,
                       child: ElevatedButton.icon(
                         onPressed: () async {
+                          String deviceType =
+                              Platform.isAndroid ? "android" : "ios";
+                          print('device type $deviceType');
+                          print("_______________________________________"
+                              "$studentInfo"
+                              "_________________________________________");
                           //for device
-                          // String theDeviceId = await getDeviceId();
-                          // print('deviceId______________________________'
-                          //     '$deviceId'
-                          //     '__________________________________________');
+
+                          await getDeviceId();
+                          print('deviceId______________________________'
+                              '$deviceId'
+                              '__________________________________________');
                           final provider = Provider.of<GoogleSignInProvider>(
                               context,
                               listen: false);
@@ -219,15 +265,23 @@ class _LoginScrState extends State<LoginScr> {
                           myEmail = provider.googleSignInAccount.email;
                           if (myEmail.endsWith("@esi-sba.dz")) {
                             studentInfo = await getStudentDetails(
-                                provider.googleSignInAccount.email);
+                                provider.googleSignInAccount.email,
+                                deviceType,
+                                deviceId);
                             if (provider.isSignIn) {
                               if (studentInfo == "student not found") {
+                                print("_______________________________________"
+                                    "$studentInfo"
+                                    "_________________________________________");
                                 Fluttertoast.showToast(
                                   toastLength: Toast.LENGTH_LONG,
                                   msg:
                                       "This email not found on the Student List ",
                                 );
                                 provider.logout();
+                                setState(() {
+                                  loading = false;
+                                });
                               } else {
                                 print("_________________________________"
                                     "$studentInfo"

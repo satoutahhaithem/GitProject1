@@ -299,21 +299,21 @@ class _StudentDrawerState extends State<StudentDrawer> {
                   ),
                   ListeTitle(
                     title: 'level :',
-                    subTitle: '${studentInf["level_Id"]}\n________________',
+                    subTitle: '${studentInf["level"]}\n________________',
                   ),
                   SizedBox(
                     height: 20,
                   ),
                   ListeTitle(
                     title: 'Section :',
-                    subTitle: '${studentInf["section_Id"]}\n________________',
+                    subTitle: '${studentInf["section"]}\n________________',
                   ),
                   SizedBox(
                     height: 20,
                   ),
                   ListeTitle(
                     title: 'Groupe :',
-                    subTitle: '${studentInf["group_Id"]}\n________________',
+                    subTitle: '${studentInf["group"]}\n________________',
                   ),
                   SizedBox(
                     height: 60,
