@@ -26,7 +26,7 @@ class _CameraScreenState extends State<CameraScreen> {
       String qrCodeString,
       String lectureId,
       String scanningTime) async {
-    final String url = "https://attendance-2.herokuapp.com/api/record";
+    final String url = "$urlLocalServer/api/record";
     final res = await http.post(
       Uri.parse(url),
       body: {
@@ -39,7 +39,7 @@ class _CameraScreenState extends State<CameraScreen> {
       },
     );
     final String responseString = res.body;
-
+    print(url);
     print('_______________'
         'case1'
         '_________________');

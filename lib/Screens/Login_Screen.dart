@@ -16,6 +16,7 @@ import 'package:device_info/device_info.dart';
 import 'dart:io' show Platform;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 class LoginScreen extends StatefulWidget {
   static final String id = '/LoginScreen';
@@ -27,8 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String deviceType = "Nothing";
   String deviceId = "Nothing";
   Future<String> getLesson(String sectionId, String groupId) async {
-    final String uri =
-        "https://attendance-2.herokuapp.com/api/lectures/now/$sectionId/$groupId";
+    final String uri = "$urlLocalServer/api/lectures/now/$sectionId/$groupId";
     final res = await http.get(Uri.parse(uri));
     final String responseString = res.body;
     return responseString;
@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<String> getStudentDetails(
       String email, String deviceType, String deviceId) async {
-    final String url = "https://attendance-2.herokuapp.com/api/student/search";
+    final String url = "$urlLocalServer/api/student/search";
     final res = await http.post(
       Uri.parse(url),
       body: {
@@ -67,6 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
         "device_id": deviceId,
       },
     );
+
     final String responseString = res.body;
 
     print('_______________'
@@ -137,8 +138,7 @@ class LoginScr extends StatefulWidget {
 
 class _LoginScrState extends State<LoginScr> {
   Future<String> getLesson(String sectionId, String groupId) async {
-    final String uri =
-        "https://attendance-2.herokuapp.com/api/lectures/now/$sectionId/$groupId";
+    final String uri = "$urlLocalServer/api/lectures/now/$sectionId/$groupId";
     final res = await http.get(Uri.parse(uri));
     final String responseString = res.body;
     return responseString;
@@ -166,9 +166,9 @@ class _LoginScrState extends State<LoginScr> {
     return deviceId;
   }
 
+  final String url = "$urlLocalServer/api/student/search";
   Future<String> getStudentDetails(
       String email, String deviceType, String deviceId) async {
-    final String url = "https://attendance-2.herokuapp.com/api/student/search";
     final res = await http.post(
       Uri.parse(url),
       body: {
@@ -243,6 +243,7 @@ class _LoginScrState extends State<LoginScr> {
                       width: 270,
                       child: ElevatedButton.icon(
                         onPressed: () async {
+                          print(url);
                           String deviceType =
                               Platform.isAndroid ? "android" : "ios";
                           print('device type $deviceType');

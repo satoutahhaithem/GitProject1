@@ -30,6 +30,7 @@ dependencies:
   firebase_core: ^1.1.0
   device_info: ^2.0.0
   fluttertoast: ^8.0.7
+  dio: ^4.0.0
   adobe_xd:
   flutter:
     sdk: flutter
