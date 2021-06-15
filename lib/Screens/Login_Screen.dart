@@ -263,6 +263,8 @@ class _LoginScrState extends State<LoginScr> {
                             loading = true;
                           });
                           await provider.logInGoogle();
+                          print(
+                              'the email is ${myEmail = provider.googleSignInAccount.email}');
                           myEmail = provider.googleSignInAccount.email;
                           if (myEmail.endsWith("@esi-sba.dz")) {
                             studentInfo = await getStudentDetails(

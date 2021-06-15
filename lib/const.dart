@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:attendance_app/Screens/Home_Screen.dart';
 
-const String urlLocalServer = "http://attendance-2.epizy.com";
+const String urlLocalServer = "http://192.168.43.239:8000";
 double myHeight = 20;
 Color kBackGroundColor = Color(0xffd9d9d9);
 Color kBlueColor = Color(0xff033e8c);

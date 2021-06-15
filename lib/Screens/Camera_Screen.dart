@@ -2,12 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:attendance_app/Screens/Home_Screen.dart';
+import 'package:attendance_app/Screens/Loading_Screen.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:attendance_app/const.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:attendance_app/service/send_data_to_the_internet.dart';
 import 'package:http/http.dart' as http;
+
+import 'Loading_scren_camera.dart';
 
 class CameraScreen extends StatefulWidget {
   final String studentInfo;
@@ -47,6 +50,7 @@ class _CameraScreenState extends State<CameraScreen> {
     return responseString;
   }
 
+  bool loading = false;
   GlobalKey qrKey = GlobalKey();
   QRViewController controller;
   String qrText = 'Nothing';
@@ -54,40 +58,42 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: kBackGroundColor,
-      appBar: AppBar(
-        backgroundColor: kBlueColor,
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            flex: 10,
-            child: QRView(
-              overlay: QrScannerOverlayShape(
-                borderRadius: 2,
-                borderColor: kBackGroundColor,
-                borderLength: 20,
-                borderWidth: 10,
-                cutOutSize: 300,
-              ),
-              key: qrKey,
-              onQRViewCreated: _onQrViewCreate,
+    return loading
+        ? LoadingScreen()
+        : Scaffold(
+            backgroundColor: kBackGroundColor,
+            appBar: AppBar(
+              backgroundColor: kBlueColor,
             ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text(
-              'ScanResult\n $qrText',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  flex: 10,
+                  child: QRView(
+                    overlay: QrScannerOverlayShape(
+                      borderRadius: 2,
+                      borderColor: kBackGroundColor,
+                      borderLength: 20,
+                      borderWidth: 10,
+                      cutOutSize: 300,
+                    ),
+                    key: qrKey,
+                    onQRViewCreated: _onQrViewCreate,
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    'ScanResult\n $qrText',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 
   @override
@@ -125,16 +131,27 @@ class _CameraScreenState extends State<CameraScreen> {
         '_____________________________________________________'
         'inside CameraScreen');
     String deviceType = Platform.isAndroid ? "android" : "ios";
-    Map<String, dynamic> studentInf = json.decode(widget.studentInfo);
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) async {
       String qrCodeString = "Nothing";
       String lectureId = "Nothing";
+      Map<String, dynamic> studentInf = json.decode(widget.studentInfo);
       setState(() {
         scanningTime = DateTime.now().toString();
         qrText = scanData.code;
         qrCodeString = qrText.substring(0, 6);
         lectureId = qrText.substring(6);
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => LoadingScreenCamera(
+                    studentInf["id"],
+                    deviceType,
+                    deviceId,
+                    qrCodeString,
+                    lectureId,
+                    scanningTime)));
       });
       String response = await sendQrDetails(studentInf["id"], deviceType,
           deviceId, qrCodeString, lectureId, scanningTime);
