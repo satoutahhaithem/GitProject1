@@ -22,14 +22,12 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
 
     _animationController.forward().whenComplete(() {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginScreen()));
+          context, MaterialPageRoute(builder: (context) => LoginScr()));
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final Function hp = Screen(MediaQuery.of(context).size).hp;
-
     return Scaffold(
         body: Hero(
       tag: 'logoTag',

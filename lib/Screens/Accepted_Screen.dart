@@ -24,7 +24,7 @@ class AcceptedScreen extends StatelessWidget {
             height: size.height / 14,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, HomeScreen.id);
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.white),

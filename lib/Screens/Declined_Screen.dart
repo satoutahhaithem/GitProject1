@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:attendance_app/const.dart';
 import 'package:attendance_app/Screens/Home_Screen.dart';
 
+import 'Camera_Screen.dart';
+
 class DeclinedScreen extends StatelessWidget {
+  final String studentInfo;
   static final String id = '/DeclinedScreen';
+
+  const DeclinedScreen({this.studentInfo});
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -24,7 +29,7 @@ class DeclinedScreen extends StatelessWidget {
             height: size.height / 15,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, HomeScreen.id);
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.white),

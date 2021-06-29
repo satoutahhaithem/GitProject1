@@ -88,18 +88,19 @@ class _LoginScreenState extends State<LoginScreen> {
     final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
 
     justLogin() async {
-      studentInfo = await getStudentDetails(
-          provider.googleSignInAccount.email, deviceType, deviceId);
       if (FirebaseAuth.instance.currentUser != null) {
+        await provider.logInGoogle();
         await getDeviceId();
         deviceType = Platform.isAndroid ? "android" : "ios";
-        print("in the just Login $deviceId");
-        print("in the just Login $deviceType");
-        print("in the just Login ${provider.googleSignInAccount.email}");
-        if (!provider.isSignIn) {
-          print('aaaaaaaaa');
-          provider.logInGoogle();
-        }
+        studentInfo = await getStudentDetails(
+            provider.googleSignInAccount.email, deviceType, deviceId);
+        // print("in the just Login $deviceId");
+        // print("in the just Login $deviceType");
+        // print("in the just Login ${provider.googleSignInAccount.email}");
+        // if (!provider.isSignIn) {
+        //   print('aaaaaaaaa');
+        //   provider.logInGoogle();
+        // }
         print('11111111111111111');
         Map<String, dynamic> studentInf = json.decode(studentInfo);
         lessonInfo = await getLesson(studentInf["section_Id"].toString(),
@@ -109,23 +110,54 @@ class _LoginScreenState extends State<LoginScreen> {
       return provider.googleSignInAccount;
     }
 
+    // justLogin() async {
+    //   if (FirebaseAuth.instance.currentUser != null) {
+    //     await provider.logInGoogle();
+    //     studentInfo =
+    //     await getStudentDetails(provider.googleSignInAccount.email);
+    //     Map<String, dynamic> studentInf = json.decode(studentInfo);
+    //     lessonInfo = await getLesson(studentInf["section_Id"].toString(),
+    //         studentInf["group_Id"].toString());
+    //     print('inside the just login $lessonInfo');
+    //   }
+    //   return provider.googleSignInAccount;
+    // }
     return FutureBuilder(
         future: justLogin(),
         builder: (context, snapshot) {
-          print(snapshot.connectionState);
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          // print(snapshot.connectionState);
+          if (snapshot.hasError) {
+            print('has Erreur');
             return LoginScr();
-          } else if (snapshot.data == null) {
-            return LoginScr();
-          } else if (provider.googleSignInAccount.photoUrl != null) {
-            return HomeScreen(
-              studentInfo: studentInfo,
-              photoUrl: provider.googleSignInAccount.photoUrl,
-              lessonInfo: lessonInfo,
-            );
-          } else {
-            return LoginScr();
-          }
+          } else if (snapshot.connectionState == ConnectionState.done) {
+            if (provider.googleSignInAccount.photoUrl != null) {
+              print('case2');
+              return HomeScreen(
+                studentInfo: studentInfo,
+                photoUrl: provider.googleSignInAccount.photoUrl,
+                lessonInfo: lessonInfo,
+              );
+            } else if (snapshot.data == null) {
+              print('case1');
+              return LoginScr();
+            } else {
+              print('case3');
+
+              return LoginScr();
+            }
+          } else
+            return LoadingScreen();
+          // if (snapshot.data == null) {
+          //   return LoginScr();
+          // } else if (provider.googleSignInAccount.email != null) {
+          //   return HomeScreen(
+          //     studentInfo: studentInfo,
+          //     photoUrl: provider.googleSignInAccount.photoUrl,
+          //     lessonInfo: lessonInfo,
+          //   );
+          // } else {
+          //   return LoginScr();
+          // }
         });
   }
 }
@@ -216,7 +248,7 @@ class _LoginScrState extends State<LoginScr> {
                       tag: 'logoTag',
                       child: CircleAvatar(
                         backgroundImage:
-                            AssetImage('assets/images/attendance_logo4.png'),
+                            AssetImage('assets/images/attendance_logo05.png'),
                         radius: MediaQuery.of(context).size.width * 0.33,
                         // child: Text(
                         //   'App_Logo',
@@ -259,6 +291,7 @@ class _LoginScrState extends State<LoginScr> {
                           final provider = Provider.of<GoogleSignInProvider>(
                               context,
                               listen: false);
+
                           setState(() {
                             loading = true;
                           });
@@ -354,7 +387,3 @@ class _LoginScrState extends State<LoginScr> {
           );
   }
 }
-
-Widget buildLoading() => Center(
-      child: CircularProgressIndicator(),
-    );

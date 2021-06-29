@@ -20,8 +20,8 @@ class HomeScreen extends StatefulWidget {
   final String photoUrl;
   final String lessonInfo;
 
-  const HomeScreen({Key key, this.studentInfo, this.photoUrl, this.lessonInfo})
-      : super(key: key);
+  HomeScreen({this.studentInfo, this.photoUrl, this.lessonInfo});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -54,7 +54,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     print('inside Home screen lesson info ${widget.lessonInfo}');
+
     Map<String, dynamic> lessonInf = json.decode(widget.lessonInfo);
+
     String timeStartingLast =
         lessonInf["last"] == null ? "****" : lessonInf["last"]["starting"];
     String timeEndingLast =
