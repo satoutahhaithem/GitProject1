@@ -26,6 +26,7 @@ dependencies:
   http:
   flutter_spinkit: ^5.0.0
   flutter_signin_button: ^2.0.0
+  dcdg: ^3.1.1
   flutter_auth_buttons: ^0.5.0
   firebase_core: ^1.1.0
   device_info: ^2.0.0

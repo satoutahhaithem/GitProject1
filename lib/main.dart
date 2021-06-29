@@ -15,6 +15,7 @@ import 'package:attendance_app/Screens/Declined_Screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'service/send_data_to_the_internet.dart';
 import 'Screens/Login/auth_services.dart';
+import 'package:dcdg/dcdg.dart';
 
 void main() async {
   String deviceType = "";
@@ -43,6 +44,7 @@ class _MyAppState extends State<MyApp> {
     AuthServices authServices = AuthServices();
     final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Splash(),
       routes: {
         LoginScreen.id: (context) => LoginScreen(),
